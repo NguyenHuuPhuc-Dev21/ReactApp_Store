@@ -1,7 +1,7 @@
 # HƯỚNG DẪN HOÀN THÀNH ASSIGNMENT: PRODUCT CATALOG APP
 ## Môn học: FER202 - ReactJS | FPT University
 
-Tài liệu này hướng dẫn chi tiết cách chạy ứng dụng, cấu trúc mã nguồn và cách giải thích việc đáp ứng **8 Chuẩn đầu ra (LO1 - LO8)** trong bài nộp Assignment của bạn dựa trên dữ liệu gọi từ API công khai **FakeStoreAPI**.
+Tài liệu này hướng dẫn chi tiết cách chạy ứng dụng, cấu trúc mã nguồn nâng cấp và cách giải thích việc đáp ứng **8 Chuẩn đầu ra (LO1 - LO8)** trong bài nộp Assignment của bạn dựa trên dữ liệu gọi từ API công khai **FakeStoreAPI**.
 
 ---
 
@@ -10,7 +10,7 @@ Tài liệu này hướng dẫn chi tiết cách chạy ứng dụng, cấu trú
 Để chạy được ứng dụng này, bạn cần cài đặt **Node.js** trên máy tính.
 
 ### Bước 1: Cài đặt các thư viện cần thiết
-Mở terminal tại thư mục dự án (`laptop-store`) và chạy lệnh sau để tải các package:
+Mở terminal tại thư mục dự án và chạy lệnh sau để tải các package:
 ```bash
 npm install
 ```
@@ -24,105 +24,87 @@ Truy cập trình duyệt tại: **http://localhost:3000** để trải nghiệm
 
 ---
 
-## 2. Cấu trúc thư mục mã nguồn
+## 2. Cấu trúc thư mục mã nguồn nâng cấp
 
 ```text
-laptop-store/
-├── package.json             # Khai báo các thư viện (Redux, Router, Axios...)
+product-store/
+├── package.json             # Khai báo thư viện (Redux, Router, Axios...)
 ├── public/
-│   └── index.html           # File HTML gốc (đã nhúng Bootstrap 5.3 CDN)
+│   └── index.html           # HTML gốc nhúng Bootstrap CDN & Icons
 └── src/
-    ├── api.js               # Cấu hình Axios instance gọi trực tiếp đến fakestoreapi.com
-    ├── App.js               # Cấu hình Routing, Navbar điều hướng và Redux badge
-    ├── App.css              # Custom CSS (chứa lớp hover hiệu ứng di chuột của Card sản phẩm)
-    ├── index.js             # File entry point, bao bọc App bằng Redux Provider
-    ├── store.js             # Cấu hình Redux Store quản lý trạng thái Yêu thích (Favorites)
+    ├── api.js               # Cấu hình Axios instance gọi tới fakestoreapi.com
+    ├── App.js               # Cấu hình Router, Navbar và global Modals / Toasts
+    ├── App.css              # Custom styling (glassmorphism login, responsive grids, custom scrollbars)
+    ├── index.js             # Nhúng Redux Provider
+    ├── store.js             # Redux store (authSlice, cartSlice, favoritesSlice, toastSlice)
     ├── components/
-    │   ├── ProductCard.jsx      # Functional Component hiển thị sản phẩm dạng card
-    │   ├── ProductCardClass.jsx # Class Component hiển thị sản phẩm nổi bật (đáp ứng LO2)
-    │   └── AddProductForm.jsx   # Form thêm sản phẩm nằm ngang (Ảnh mẫu 3)
+    │   ├── ProductCard.jsx      # Functional card component
+    │   ├── ProductCardClass.jsx # Class card component (LO2)
+    │   ├── AddProductForm.jsx   # Form thêm sản phẩm nằm ngang (có input ảnh & validate)
+    │   ├── ProtectedRoute.jsx   # Route wrapper chặn đăng nhập và kiểm tra phân quyền Admin/Customer
+    │   ├── CustomModal.jsx      # Modal thông báo và xác nhận tùy biến thay cho browser popups
+    │   └── NotificationToast.jsx # Toast thông báo góc phải dưới màn hình tự động ẩn sau 3 giây
     └── pages/
-        ├── Home.jsx             # Trang chủ (/) chứa danh sách grid card trắng và thanh tìm kiếm
-        ├── ProductList.jsx      # Trang tính năng chính (/feature) gồm Form thêm và bảng danh sách Delete
-        ├── ProductDetail.jsx    # Trang xem chi tiết sản phẩm (/feature/:id) gồm nút Back Home và Edit
-        └── About.jsx            # Trang giới thiệu (/about) thông tin sinh viên và ma trận LO
+        ├── Home.jsx             # Trang chủ chứa bộ lọc danh mục, sắp xếp, tìm kiếm và phân trang
+        ├── ProductList.jsx      # Trang quản lý kho của Admin (Bảng danh sách xóa)
+        ├── ProductDetail.jsx    # Trang chi tiết sản phẩm và mô tả thông số
+        ├── EditProduct.jsx      # Trang sửa thông số sản phẩm (chỉ dành cho Admin, có validate)
+        ├── Cart.jsx             # Giỏ hàng với nút tăng giảm số lượng
+        ├── Checkout.jsx         # Form thanh toán và mã QR VietQR chuyển khoản tự động
+        ├── Favorites.jsx        # Trang danh sách sản phẩm yêu thích của người dùng
+        ├── About.jsx            # Thông tin sinh viên & ma trận LO
+        └── Unauthorized.jsx     # Trang báo lỗi 403 từ chối quyền truy cập của Customer
 ```
 
 ---
 
-## 3. Giải thích chi tiết cách ứng dụng đáp ứng LO1 - LO8
+## 3. Cách trình bày các tính năng thương mại điện tử nổi bật
 
-Dưới đây là phần hướng dẫn viết báo cáo hoặc điền vào file `README.md` của bạn để chứng minh với giảng viên rằng bài làm đáp ứng hoàn hảo các yêu cầu:
+Khi được giảng viên vấn đáp, hãy nhấn mạnh các nâng cấp nâng cao của dự án:
 
-###  LO1: Khởi tạo dự án & Sử dụng Git quản lý phiên bản (Tối thiểu 5 Commits)
-*   **Cách kiểm tra:** Dự án được tạo bằng bộ khung `create-react-app`. Bạn cần khởi tạo Git và thực hiện các commit trong quá trình làm bài.
-*   **Hướng dẫn chạy lệnh Git để tạo lịch sử 5 commits:**
-    1.  Khởi tạo Git: `git init`
-    2.  Tạo commit 1 (Khởi tạo dự án):
-        ```bash
-        git add .
-        git commit -m "LO1: Initialize React project skeleton"
-        ```
-    3.  Tạo commit 2 (Thêm các trang Home, About, ProductList):
-        ```bash
-        git add src/pages/
-        git commit -m "LO5: Set up React Router and page layouts"
-        ```
-    4.  Tạo commit 3 (Xây dựng Class & Functional ProductCard):
-        ```bash
-        git add src/components/
-        git commit -m "LO2: Create Class and Functional components for ProductCard"
-        ```
-    5.  Tạo commit 4 (Tích hợp public API FakeStoreAPI):
-        ```bash
-        git add src/api.js src/pages/Home.jsx
-        git commit -m "LO7: Fetch products from public FakeStoreAPI via Axios"
-        ```
-    6.  Tạo commit 5 (Tích hợp Redux Toolkit quản lý yêu thích):
-        ```bash
-        git add src/store.js src/index.js
-        git commit -m "LO8: Implement Redux Toolkit for global Favorites state"
-        ```
-
-### LO2: Xây dựng Component tái sử dụng dưới cả dạng Class và Functional
-*   **Vị trí mã nguồn:**
-    *   Functional Component: [ProductCard.jsx](src/components/ProductCard.jsx)
-    *   Class Component: [ProductCardClass.jsx](src/components/ProductCardClass.jsx)
-*   **Cách hoạt động:** Trên giao diện danh sách chính (Trang chủ `/`), sản phẩm đầu tiên được chỉ định hiển thị bằng Class Component (`ProductCardClass.jsx` có nhãn màu vàng "Class UI" nổi bật), các sản phẩm tiếp theo hiển thị bằng Functional Component (`ProductCard.jsx` có nhãn màu đỏ "Favorites" để chọn). Class Component cũng thực hiện ghi log vòng đời ra Console trình duyệt để chứng minh.
-
-### LO3: Sử dụng JSX và ES6 (Arrow functions, Template literals, Destructuring)
-*   **Chi tiết kỹ thuật:**
-    *   *Arrow functions:* Khai báo Component và các hàm xử lý sự kiện bất đồng bộ.
-    *   *Template literals:* Sử dụng để tạo đường dẫn động chi tiết sản phẩm: ``to={`/feature/${id}`}`` và giá sản phẩm hiển thị dạng USD: `` `${price.toFixed(2)}` ``.
-    *   *Destructuring:* Trích xuất các thuộc tính từ API trả về: `const { id, title, description, price, image } = product;`
-
-### LO4: Định dạng giao diện bằng Bootstrap & Tùy biến CSS riêng
-*   **Chi tiết kỹ thuật:**
-    *   Sử dụng lưới Bootstrap (`row row-cols-1 row-cols-md-4 g-4`), các component Form, Table, Badge, Button, Navbar của Bootstrap để tạo giao diện.
-    *   Tùy biến một component cụ thể bằng CSS thuần: Lớp `.product-card:hover` trong `App.css` định nghĩa hiệu ứng bóng đổ viền xanh dương và nhô lên khi di chuột qua.
-
-### LO5: Thiết lập React Router với tối thiểu 3 Routes chính
-*   **Vị trí mã nguồn:** Cấu hình Routes trong [App.js](src/App.js).
-*   **Chi tiết kỹ thuật:**
-    1.  Trang chủ: `/` (Home) chứa danh sách sản phẩm và thanh tìm kiếm lọc sản phẩm.
-    2.  Trang tính năng chính (Main Feature): `/feature` để thêm và xóa danh sách sản phẩm.
-    3.  Trang giới thiệu: `/about` (About) ghi thông tin cá nhân và ma trận LO.
-    Tuyến đường xem chi tiết `/feature/:id` và sửa `/products/:id/edit` cũng được khai báo đầy đủ.
-
-### LO6: Sử dụng useState và useEffect cho các tính năng tương tác & Sự kiện
-*   **Chi tiết kỹ thuật:**
-    *   `useState` được dùng quản lý danh sách sản phẩm, thanh tìm kiếm lọc sản phẩm động, các ô nhập form thêm mới sản phẩm và thông báo lỗi.
-    *   `useEffect` được dùng để tự động gọi API lấy danh sách sản phẩm khi trang vừa được mở hoặc khi tham số `id` thay đổi.
-    *   Sự kiện: Bắt các sự kiện `onSubmit` của Form nhập liệu và `onClick` của nút Xóa (có xác nhận `window.confirm`).
-
-### LO7: Kết nối API công khai, hiển thị Loading/Error & Tải chậm (Lazy-load / Suspense)
-*   **Chi tiết kỹ thuật:**
-    *   Sử dụng `axios` gọi trực tuyến tới `https://fakestoreapi.com/products` bất đồng bộ (Async/Await) để tải dữ liệu thực tế. Hiển thị spinner khi tải dữ liệu hoặc lỗi kết nối.
-    *   Sử dụng `React.lazy()` và `<React.Suspense>` trong `App.js` để lazy-load các trang `/feature` và `/about` giúp tối ưu tài nguyên tải ban đầu.
-
-### LO8: Sử dụng Redux quản lý trạng thái toàn cục & Hiển thị tóm tắt trên Navbar
-*   **Chi tiết kỹ thuật:**
-    *   Redux store lưu danh sách ID các sản phẩm yêu thích (Favorites). Khi bấm nút Trái tim trên card sản phẩm, ứng dụng dispatches action `toggleFavorite` để lưu/xóa khỏi giỏ yêu thích.
-    *   Navbar lấy số lượng yêu thích bằng `useSelector` và hiển thị tóm tắt ở góc phải Navbar dạng: `Favorites: [số lượng]`.
+1.  **Phân quyền truy cập tài khoản:**
+    *   Hệ thống tự động bảo vệ tất cả các trang. Nếu chưa đăng nhập, người dùng cố tình vào bất kỳ trang nào đều bị chuyển hướng về `/login`.
+    *   Tài khoản `customer` không được phép vào quản lý kho `/feature`. Khi cố tình truy cập, trang báo lỗi `403 Unauthorized` sẽ hiển thị để ngăn cản. Chỉ tài khoản `admin` mới có quyền xem trang này.
+2.  **Giỏ hàng theo tài khoản (LocalStorage isolation):**
+    *   Dữ liệu giỏ hàng được đồng bộ riêng với từng tài khoản trong local storage (`cart_admin` và `cart_customer`). Khi admin đăng xuất và customer đăng nhập, giỏ hàng sẽ thay đổi tương ứng mà không bị đè hay trùng lắp sản phẩm của nhau.
+3.  **Tích hợp mã thanh toán VietQR động:**
+    *   Đơn hàng thanh toán bằng chuyển khoản ngân hàng sẽ sinh mã VietQR chuẩn MB Bank chứa đầy đủ số tiền chuyển đổi sang VNĐ (tỷ giá 1 USD = 25,000đ), tên chủ tài khoản và nội dung chuyển khoản chứa mã đơn hàng `ORD-XXXXXX`. Giúp người mua quét nhanh không cần nhập tay.
+4.  **Hộp thoại Custom Modals & Toasts:**
+    *   Hệ thống không sử dụng hộp thoại mặc định của trình duyệt (`alert` hay `confirm` thông thường). Tất cả các thông báo thêm hàng thành công được hiển thị bằng toast nhỏ tự tắt sau 3 giây ở góc dưới. Các hành động nguy hiểm như Xóa sản phẩm khỏi kho, Xóa khỏi giỏ hàng, Đăng xuất đều hiển thị Custom Modal thiết kế chuyên biệt có nút Xác nhận / Hủy bỏ rõ ràng.
+5.  **Bản đồ E-commerce đầy đủ:**
+    *   Trang chủ hỗ trợ phân trang (8 sản phẩm một trang), lọc theo các danh mục API cung cấp, và sắp xếp theo giá cả hoặc tên A-Z.
+    *   Trang yêu thích `/favorites` hiển thị riêng những sản phẩm người dùng đã thả tim từ trang chủ.
 
 ---
+
+## 4. Giải thích cách ứng dụng đáp ứng LO1 - LO8
+
+### LO1: Khởi tạo dự án & Sử dụng Git quản lý phiên bản
+*   **Chi tiết:** Dự án được tạo bằng Create React App. Các commit được thực hiện tuần tự để ghi nhận lịch sử các giai đoạn phát triển (khởi tạo, router, components, api, redux).
+
+### LO2: Xây dựng Component dưới cả dạng Class và Functional
+*   **Vị trí:**
+    *   Functional Component: [ProductCard.jsx](src/components/ProductCard.jsx)
+    *   Class Component: [ProductCardClass.jsx](src/components/ProductCardClass.jsx)
+*   **Chi tiết:** Để chứng minh tính tương thích, sản phẩm đầu tiên trên trang chủ luôn được hiển thị bằng Class Component (có nhãn màu vàng "Class UI"), các sản phẩm sau hiển thị bằng Functional Component. Class component có ghi console log vòng đời `componentDidMount` và `componentWillUnmount`.
+
+### LO3: Sử dụng JSX và ES6 (Arrow functions, Template literals, Destructuring)
+*   **Chi tiết:**
+    *   *Arrow functions:* Khai báo components và các hàm xử lý.
+    *   *Template literals:* Tạo các URL ảnh VietQR động và đường dẫn router chi tiết sản phẩm.
+    *   *Destructuring:* Trích xuất payload trong Redux slices và trường dữ liệu từ API.
+
+### LO4: Định dạng giao diện bằng Bootstrap & Tùy biến CSS riêng
+*   **Chi tiết:** Nhúng Bootstrap 5.3 CDN định dạng lưới, bảng biểu, form và navbar. Tùy biến CSS trong `App.css` cho giao diện glassmorphic đăng nhập, scrollbar và hiệu ứng hover card sản phẩm nổi bật.
+
+### LO5: Thiết lập React Router với tối thiểu 3 Routes chính
+*   **Chi tiết:** Khai báo các tuyến đường trong `App.js`. Bao gồm Trang chủ, Kho hàng, Giới thiệu, Đăng nhập, Giỏ hàng, Thanh toán, Danh sách yêu thích.
+
+### LO6: Sử dụng useState và useEffect cho các tính năng tương tác
+*   **Chi tiết:** `useState` quản lý dữ liệu lọc danh mục, sắp xếp, trang hiện tại, form input và errors validation. `useEffect` tự động gọi API lấy sản phẩm hoặc đếm ngược ẩn Toast.
+
+### LO7: Kết nối API công khai, hiển thị Loading/Error & Tải chậm (Lazy-load / Suspense)
+*   **Chi tiết:** Gọi API FakeStoreAPI qua `axios`. Hiển thị spinner khi đang tải trang. Sử dụng `React.lazy` và `Suspense` tải chậm các module trang lớn để tối ưu hiệu năng.
+
+### LO8: Sử dụng Redux quản lý trạng thái toàn cục & Hiển thị tóm tắt trên Navbar
+*   **Chi tiết:** Sử dụng Redux Toolkit (`store.js`) quản lý 4 trạng thái toàn cục: Yêu thích (`favorites`), Giỏ hàng (`cart`), Xác thực tài khoản (`auth`), và Thông báo trôi (`toast`). Navbar lấy dữ liệu qua `useSelector` hiển thị số lượng giỏ hàng và yêu thích động ở góc phải.

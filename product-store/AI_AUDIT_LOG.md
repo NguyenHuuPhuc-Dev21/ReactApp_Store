@@ -1,4 +1,4 @@
-﻿# BẢNG 1: Nhật ký sử dụng AI (AI_AUDIT_LOG)
+# BẢNG 1: Nhật ký sử dụng AI (AI_AUDIT_LOG)
 *Ghi mỗi lần dùng AI vào 1 dòng. Mức hỗ trợ: Low = AI gợi ý nhỏ | Medium = AI gợi ý thiết kế, sửa lỗi | High = AI gợi ý khung cấu trúc lớn*
 
 | Ngày (*) | TV (*) | Công cụ AI (*) | Mục đích sử dụng (*) | File ảnh hưởng | Mức hỗ trợ (*) | Đã chỉnh sửa gì? | Kiểm chứng |
@@ -7,6 +7,11 @@
 | 15/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Tham khảo cách tối giản hóa Redux Store | `src/store.js`, `src/App.js` | **Medium** | Nhận hướng dẫn tinh giản Redux Store từ giỏ hàng sang danh sách Favorites IDs đơn giản, hiển thị đếm số lượng trên Navbar. | State yêu thích cập nhật ngay lập tức khi bấm chọn sản phẩm. |
 | 17/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Hỗ trợ cấu trúc CSS và định dạng layout Bootstrap | `src/pages/Home.jsx`, `src/pages/ProductList.jsx`, `src/components/AddProductForm.jsx`, `src/components/ProductCard.jsx`, `src/App.css` | **Medium** | Tham khảo gợi ý về cách chia cột grid Bootstrap, các thuộc tính CSS cho hiệu ứng hover card sản phẩm và form nằm ngang. | Giao diện hiển thị cân đối trên cả điện thoại và máy tính, giống bản vẽ mẫu. |
 | 20/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Tư vấn chuyển đổi nguồn dữ liệu sang FakeStoreAPI | `src/api.js`, `src/components/ProductCard.jsx`, `src/pages/Home.jsx`, `src/pages/ProductList.jsx` | **High** | Nhận giải pháp ánh xạ dữ liệu trực tuyến (USD, URL ảnh) và phương án đồng bộ danh sách sản phẩm trong State khi gọi POST/DELETE. | Dữ liệu sản phẩm hiển thị đầy đủ trực tuyến, các chức năng thêm/xóa đồng bộ lập tức trên UI. |
+| 20/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Hỗ trợ lập trình trang đăng nhập và cơ chế bảo vệ Route | `src/pages/Login.jsx`, `src/components/ProtectedRoute.jsx` | **High** | AI gợi ý thiết kế `authSlice` quản lý phiên đăng nhập, phân chia bảo vệ các route và kiểm tra phân quyền người dùng theo vai trò. | Login chuyển trang đúng, chặn người dùng chưa xác thực truy cập hệ thống. |
+| 20/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Tích hợp giỏ hàng Redux và lưu trữ đồng bộ localStorage | `src/store.js`, `src/pages/Cart.jsx` | **Medium** | Hướng dẫn cách tạo `cartSlice` quản lý thêm/xóa/sửa số lượng sản phẩm, lưu giỏ hàng vào `localStorage` của trình duyệt. | Giỏ hàng tăng giảm số lượng, tính tổng giá trị chính xác. |
+| 21/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Tích hợp cổng thanh toán trực quan với VietQR động | `src/pages/Checkout.jsx` | **High** | Gợi ý sử dụng API `img.vietqr.io` để sinh mã QR động chứa số tài khoản MB Bank, số tiền VNĐ và nội dung là mã đơn hàng. | Quét QR ngân hàng tự động điền đầy đủ và đúng thông tin hóa đơn chuyển khoản. |
+| 21/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Hỗ trợ phân trang, lọc sản phẩm theo danh mục và sắp xếp | `src/pages/Home.jsx` | **Medium** | Gợi ý thuật toán phân trang 8 sản phẩm/trang, kết hợp lọc theo danh mục FakeStore và sắp xếp tăng giảm theo giá/tên. | Giao diện phân trang mượt mà, chuyển bộ lọc tự reset về trang 1. |
+| 21/07/2026 | Nguyễn Hữu Phúc | Antigravity (Gemini) | Thay thế các hộp thoại alert/confirm bằng Custom Modal và Toast | `src/components/CustomModal.jsx`, `src/components/NotificationToast.jsx` | **Medium** | Tư vấn thiết kế component `CustomModal` dùng chung và Redux `toastSlice` để hiển thị toast trôi ở góc màn hình. | Đăng xuất, xóa sản phẩm hiển thị modal xác nhận đẹp mắt, thêm vào giỏ hiện toast 3s. |
 
 ---
 
@@ -21,6 +26,8 @@
 | Nguyễn Hữu Phúc | Xây dựng Class Component `ProductCardClass` để hiển thị card sản phẩm nổi bật | `src/components/ProductCardClass.jsx` | LO2 |
 | Nguyễn Hữu Phúc | Thiết kế Form thêm sản phẩm nằm ngang theo thiết kế mẫu | `src/components/AddProductForm.jsx` | LO6 |
 | Nguyễn Hữu Phúc | Viết tài liệu hướng dẫn sinh viên nộp bài và lộ trình phân nhánh Git | `ASSIGNMENT_GUIDE.md`, `GIT_WORKFLOW.md` | LO1 |
+| Nguyễn Hữu Phúc | Tạo mới trang Danh Sách Yêu Thích riêng biệt hiển thị các sản phẩm đã thả tim | `src/pages/Favorites.jsx` | LO8 |
+| Nguyễn Hữu Phúc | Bổ sung trường tải ảnh URL và validation kiểm tra định dạng ảnh trong AddProductForm | `src/components/AddProductForm.jsx` | LO6 |
 
 ### Changed — Cải tiến
 | TV (*) | Mô tả thay đổi (*) | File liên quan | Ghi chú |
@@ -30,12 +37,15 @@
 | Nguyễn Hữu Phúc | Tái cấu trúc trang Home chứa thanh tìm kiếm động và lưới sản phẩm card trắng trên nền tối | `src/pages/Home.jsx`, `src/components/ProductCard.jsx` | LO4, LO6 |
 | Nguyễn Hữu Phúc | Điều chỉnh trang ProductList chứa đồng thời form thêm sản phẩm ngang và bảng danh sách Delete | `src/pages/ProductList.jsx` | LO6 |
 | Nguyễn Hữu Phúc | Hoàn thiện file README.md ghi nhận ma trận đáp ứng 8 chuẩn đầu ra LO | `README.md` | Minh bạch tài nguyên |
+| Nguyễn Hữu Phúc | Tách biệt giỏ hàng lưu trữ trong localStorage theo tên người dùng đăng nhập | `src/store.js`, `src/pages/Login.jsx`, `src/App.js` | LO8 |
+| Nguyễn Hữu Phúc | Cập nhật nút Yêu thích và Giỏ hàng chỉ hiển thị trên Navbar khi đã xác thực tài khoản | `src/App.js` | LO5, LO8 |
 
 ### Fixed — Sửa lỗi
 | TV (*) | Mô tả thay đổi (*) | File liên quan | Ghi chú |
 | :--- | :--- | :--- | :--- |
 | Nguyễn Hữu Phúc | Sửa đổi nhãn điều hướng từ "Add Product" thành "Main Feature" trên thanh Navbar | `src/App.js` | Đáp ứng LO5 |
 | Nguyễn Hữu Phúc | Khắc phục vấn đề không lưu dữ liệu của FakeStoreAPI bằng cách đồng bộ hóa thủ công với React State | `src/pages/ProductList.jsx` | LO6 |
+| Nguyễn Hữu Phúc | Ẩn nút sửa sản phẩm (Edit Product) ở trang chi tiết đối với tài khoản vai trò customer | `src/pages/ProductDetail.jsx` | Phân quyền người dùng |
 
 ### Removed — Xóa bỏ
 | TV (*) | Mô tả thay đổi (*) | File liên quan | Ghi chú |
@@ -78,4 +88,3 @@
 *   **Kết quả AI trả về và vấn đề gặp phải:** AI hướng dẫn cấu hình api.js trỏ sang fakestoreapi.com, cách tính toán giá gốc chênh lệch (+25%) trực tuyến để giữ bố cục cũ, và cách cập nhật local state song song khi gọi API để giao diện phản hồi thay đổi lập tức.
 *   **Nhóm đã chỉnh sửa / sử dụng như thế nào:** Cập nhật tệp card và bảng, định dạng tiền tệ USD, viết hàm xử lý thêm/xóa cập nhật trực tiếp vào State mảng sản phẩm.
 *   **Kiểm chứng (test pass/fail, kết quả đúng không):** Pass. Tải thành công danh sách thời trang, trang sức từ API trực tuyến. Các thao tác thêm mới và xóa cập nhật trực quan tức thì trên màn hình.
-

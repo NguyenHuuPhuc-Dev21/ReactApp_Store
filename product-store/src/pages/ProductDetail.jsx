@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import api from "../api";
+import { addToCart, showToast } from "../store";
 
 function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const isAdmin = currentUser?.role === "admin";
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     api
@@ -16,6 +24,12 @@ function ProductDetail() {
       .catch(() => setError("Product not found."))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    dispatch(addToCart({ product, quantity }));
+    dispatch(showToast({ message: `Đã thêm ${quantity} sản phẩm "${product.title || product.name}" vào giỏ hàng!` }));
+  };
 
   if (loading) return <p className="text-center py-5 text-white">Loading details...</p>;
   
@@ -33,7 +47,9 @@ function ProductDetail() {
   if (!product) return null;
 
   const { title, description, price, image } = product;
-  const numericPrice = typeof price === "string" ? parseFloat(price) : price;
+  const numericPrice = typeof price === "string" 
+    ? parseFloat(price.replace(/[^0-9.-]+/g, "")) || 0
+    : price;
   const originalPriceStr = `$${(numericPrice * 1.25).toFixed(2)}`;
   const currentPriceStr = `$${numericPrice.toFixed(2)}`;
 
@@ -59,9 +75,29 @@ function ProductDetail() {
             {description}
           </p>
           
-          <div className="mb-4">
+          <div className="mb-3">
             <div className="text-white small">Original Price: <span className="text-decoration-line-through">{originalPriceStr}</span></div>
             <div className="text-danger fw-bold fs-3">{currentPriceStr}</div>
+          </div>
+
+          {/* Quantity Selector */}
+          <div className="d-flex align-items-center justify-content-center gap-2 mb-4">
+            <span className="text-light small me-2">Số lượng:</span>
+            <button 
+              className="btn btn-sm btn-outline-light px-2 py-0 fw-bold" 
+              type="button" 
+              onClick={() => setQuantity(q => Math.max(1, q - 1))}
+            >
+              -
+            </button>
+            <span className="px-3 py-1 bg-dark text-warning border border-secondary rounded font-monospace fw-bold">{quantity}</span>
+            <button 
+              className="btn btn-sm btn-outline-light px-2 py-0 fw-bold" 
+              type="button" 
+              onClick={() => setQuantity(q => q + 1)}
+            >
+              +
+            </button>
           </div>
 
           {/* Action buttons matching specs */}
@@ -69,9 +105,14 @@ function ProductDetail() {
             <button className="btn-back-home shadow-sm" onClick={() => navigate("/")}>
               Back Home
             </button>
-            <Link to={`/products/${id}/edit`} className="btn-edit-detail shadow-sm text-center">
-              Edit
-            </Link>
+            <button className="btn-add-to-cart shadow-sm" onClick={handleAddToCart}>
+              <i className="bi bi-cart-plus-fill me-1"></i> Add to Cart
+            </button>
+            {isAdmin && (
+              <Link to={`/products/${id}/edit`} className="btn-edit-detail shadow-sm text-center">
+                Edit
+              </Link>
+            )}
           </div>
         </div>
       </div>

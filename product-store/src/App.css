@@ -241,3 +241,67 @@ body {
   font-weight: 500;
   display: inline-block;
 }
+
+/* Custom Add to Cart Button styles */
+.btn-add-to-cart {
+  background-color: #0d6efd; /* Blue action */
+  color: #ffffff;
+  border: none;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.btn-add-to-cart:hover {
+  background-color: #0b5ed7;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.product-card .btn-add-to-cart {
+  margin-top: 8px;
+  align-self: stretch; /* Stretch full-width inside functional cards */
+}
+
+/* Quick Login boxes styling */
+.quick-login-box {
+  background-color: #212529;
+}
+
+.quick-login-box:hover {
+  background-color: #2c3034 !important;
+  border-color: #ffc107 !important;
+  transform: translateX(4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Table styles inside dark mode */
+.table-dark {
+  --bs-table-bg: #2b3035 !important;
+  --bs-table-hover-bg: #32373d !important;
+  color: #ffffff !important;
+}
+
+/* glassmorphism for login container */
+.login-card-container {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Pulse animation for nav badges on change */
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.badge-pop {
+  animation: pop 0.3s ease-in-out;
+}
+

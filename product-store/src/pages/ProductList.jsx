@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import api from "../api";
 import AddProductForm from "../components/AddProductForm";
+import CustomModal from "../components/CustomModal";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Custom Modal States
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -38,15 +43,22 @@ function ProductList() {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm("Delete this product?");
-    if (!confirmed) return;
+  const handleDeleteClick = (id) => {
+    setProductToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setShowDeleteModal(false);
+    if (!productToDelete) return;
     try {
-      await api.delete(`/products/${id}`);
+      await api.delete(`/products/${productToDelete}`);
       // Sync local state:
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete));
     } catch (err) {
       setError("Failed to delete product from database.");
+    } finally {
+      setProductToDelete(null);
     }
   };
 
@@ -112,7 +124,7 @@ function ProductList() {
                     <td className="text-center">
                       <button
                         className="btn-delete-table shadow-sm fw-semibold"
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDeleteClick(product.id)}
                       >
                         Delete
                       </button>
@@ -131,6 +143,19 @@ function ProductList() {
           </table>
         </div>
       </div>
+
+      {/* Custom Confirmation Modal for Deletion */}
+      <CustomModal 
+        show={showDeleteModal}
+        type="danger"
+        title="Xóa sản phẩm"
+        message="Bạn có chắc chắn muốn xóa sản phẩm này khỏi cơ sở dữ liệu? Hành động này không thể hoàn tác."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setProductToDelete(null);
+        }}
+      />
     </div>
   );
 }

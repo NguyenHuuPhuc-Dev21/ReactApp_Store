@@ -8,6 +8,7 @@ function EditProduct() {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -29,13 +30,41 @@ function EditProduct() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!form.name || form.name.trim().length < 3) {
+      newErrors.name = "Tên sản phẩm phải có ít nhất 3 ký tự.";
+    }
+    const priceVal = parseFloat(form.price);
+    if (!form.price || isNaN(priceVal) || priceVal <= 0) {
+      newErrors.price = "Giá gốc phải là số dương hợp lệ.";
+    }
+    if (form.currentPrice) {
+      const currentPriceVal = parseFloat(form.currentPrice);
+      if (isNaN(currentPriceVal) || currentPriceVal <= 0) {
+        newErrors.currentPrice = "Giá khuyến mãi phải là số dương hợp lệ.";
+      } else if (!isNaN(priceVal) && currentPriceVal > priceVal) {
+        newErrors.currentPrice = "Giá khuyến mãi không được lớn hơn giá gốc.";
+      }
+    }
+    if (!form.description || form.description.trim().length < 10) {
+      newErrors.description = "Mô tả sản phẩm phải có ít nhất 10 ký tự.";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
     setSaving(true);
     setError(null);
     try {
@@ -96,18 +125,18 @@ function EditProduct() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <div className="row g-3">
               <div className="col-12">
                 <label htmlFor="edit-name" className="form-label fw-semibold text-secondary small">Product Name:</label>
                 <input
                   id="edit-name"
                   name="name"
-                  className="form-control"
+                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   value={form.name}
                   onChange={handleChange}
-                  required
                 />
+                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
               </div>
 
               <div className="col-md-6">
@@ -115,11 +144,11 @@ function EditProduct() {
                 <input
                   id="edit-price"
                   name="price"
-                  className="form-control"
+                  className={`form-control ${errors.price ? "is-invalid" : ""}`}
                   value={form.price}
                   onChange={handleChange}
-                  required
                 />
+                {errors.price && <div className="invalid-feedback">{errors.price}</div>}
               </div>
 
               <div className="col-md-6">
@@ -127,10 +156,11 @@ function EditProduct() {
                 <input
                   id="edit-current-price"
                   name="currentPrice"
-                  className="form-control"
+                  className={`form-control ${errors.currentPrice ? "is-invalid" : ""}`}
                   value={form.currentPrice}
                   onChange={handleChange}
                 />
+                {errors.currentPrice && <div className="invalid-feedback">{errors.currentPrice}</div>}
               </div>
 
               <div className="col-12">
@@ -139,10 +169,11 @@ function EditProduct() {
                   id="edit-description"
                   name="description"
                   rows="4"
-                  className="form-control"
+                  className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   value={form.description}
                   onChange={handleChange}
                 />
+                {errors.description && <div className="invalid-feedback">{errors.description}</div>}
               </div>
 
               <div className="col-12 d-flex gap-3 justify-content-center mt-4">
